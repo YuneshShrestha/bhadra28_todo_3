@@ -1,32 +1,61 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddScreen extends StatelessWidget {
-  const AddScreen({super.key});
+  const AddScreen({super.key, required this.addFunc});
+  final Function addFunc;
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController txtCtrl = TextEditingController();
+    GlobalKey<FormState> key = GlobalKey<FormState>();
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Items"),
+        title: Text(
+          "Add Items",
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
       ),
-      body: Container(
-        margin: const EdgeInsets.all(6.0),
-        child: Column(
-          children: [
-            // Input field
-            // Validfation
-            const TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
+      body: Form(
+        key: key,
+        child: Container(
+          margin: const EdgeInsets.all(6.0),
+          child: Column(
+            children: [
+              // Input field
+              // Validfation
+              TextFormField(
+                controller: txtCtrl,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                validator: (data) {
+                  if (data == null || data.isEmpty) {
+                    return 'Please enter the data';
+                  }
+                },
               ),
-            ),
-  
-            // Button
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Add"),
-            ),
-          ],
+              Switch.adaptive(value: true, onChanged: (_) {}),
+              // Button
+              ElevatedButton(
+                onPressed: () {
+                  if (key.currentState!.validate()) {
+                    addFunc(
+                      {
+                        "title": txtCtrl.value.text,
+                        "id": DateTime.now().toString(),
+                      },
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("Add"),
+              ),
+            ],
+          ),
         ),
       ),
     );

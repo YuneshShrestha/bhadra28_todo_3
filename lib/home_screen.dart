@@ -1,4 +1,6 @@
-import 'package:counter_app/add_screen.dart';
+import 'dart:math';
+
+import './add_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -9,38 +11,55 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List todoList = ["Items1", "Items2"];
+  List<Map> todoList = [
+    {
+      "title": "Task1",
+      "id": "1",
+    },
+    {
+      "title": "Task 2",
+      "id": "2",
+    },
+    {
+      "title": "Task 3",
+      "id": "3",
+    },
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("TODO"),
+        title: Text(
+          "TODO",
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
         actions: [
-          ElevatedButton(
-            onPressed: () {
-              add("Kurkure");
-            },
-            child: Text("Add"),
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return const AddScreen();
+                return AddScreen(
+                  addFunc: add,
+                );
               }));
             },
             icon: const Icon(Icons.arrow_forward),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.light),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // loop: for, do-while, for-in , while, forEach, map
-
-            // for (var d in todoList) Text(d)
-
             ...todoList.map((e) {
-              return Text(e);
+              return TodoCardWidget(
+                id: e['id'],
+                title: e['title'],
+                fn: remove,
+                key: ValueKey(e['id']),
+              );
             })
           ],
         ),
@@ -48,30 +67,54 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void add(String item) {
+  void add(Map item) {
     setState(() {
       todoList.add(item);
     });
   }
 
-  void remove(int index) {
+  void remove(String id) {
     setState(() {
-      todoList.removeAt(index);
+      todoList.removeWhere((item) {
+        return item['id'] == id;
+      });
     });
   }
 }
 
-class TodoCardWidget extends StatelessWidget {
+class TodoCardWidget extends StatefulWidget {
   const TodoCardWidget({
     super.key,
     required this.title,
+    required this.fn,
+    required this.id,
   });
   final String title;
+  final Function fn;
+  final String id;
+
+  @override
+  State<TodoCardWidget> createState() => _TodoCardWidgetState();
+}
+
+class _TodoCardWidgetState extends State<TodoCardWidget> {
+  List<Color> colors = [
+    Colors.redAccent, //0
+    Colors.black38, //1
+    const Color.fromARGB(255, 190, 185, 58), //2
+  ];
+  late Color colorVal;
+  @override
+  void initState() {
+    super.initState();
+    var index = Random().nextInt(3); //0-2
+    colorVal = colors[index];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.amber,
+      color: colorVal,
       margin: const EdgeInsets.only(
         left: 8.0,
         right: 8.0,
@@ -82,11 +125,13 @@ class TodoCardWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Text
-          const Text("data"),
+          Text(widget.title),
 
           // Button
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.fn(widget.id);
+            },
             child: Text("Delete"),
           ),
         ],
