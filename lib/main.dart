@@ -33,14 +33,47 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+
+  static of(BuildContext context) {
+    return context.findAncestorStateOfType<_MyAppState>();
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+  var brightness = Brightness.dark;
+  void toogleBrrightness() {
+    //  brightness is dark
+    // if (brightness == Brightness.dark) {
+    //   // light
+    //   setState(() {
+    //     brightness = Brightness.light;
+    //   });
+    // }
+    // //light
+    // else {
+    //   // dark
+    //   setState(() {
+    //     brightness = Brightness.dark;
+    //   });
+    // }
+    // ternaruy operator
+    setState(() {
+      brightness =
+          brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var brightness = Brightness.light;
     return MaterialApp(
-      home: const MySplashScreen(),
+      home: MySplashScreen(
+        fn: toogleBrrightness,
+      ),
       theme: ThemeData(
           textTheme: GoogleFonts.cedarvilleCursiveTextTheme().copyWith(
             displayLarge: GoogleFonts.cedarvilleCursive(
@@ -55,6 +88,4 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
-  // function
-  // if (light) dark else (dark) light
 }

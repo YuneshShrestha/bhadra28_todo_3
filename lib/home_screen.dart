@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:counter_app/main.dart';
+
 import './add_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.fn});
+  final Function fn;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -47,8 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.light),
+        onPressed: () {
+          //
+
+          MyApp.of(context).toogleBrrightness();
+        },
+        child: Theme.of(context).brightness == Brightness.dark
+            ? Icon(Icons.light_mode_outlined)
+            : Icon(Icons.light_mode),
       ),
       body: SingleChildScrollView(
         child: Column(

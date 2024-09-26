@@ -2,7 +2,8 @@ import 'package:counter_app/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class MySplashScreen extends StatelessWidget {
-  const MySplashScreen({super.key});
+  const MySplashScreen({super.key, required this.fn});
+  final Function fn;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +119,9 @@ class MySplashScreen extends StatelessWidget {
               InkWell(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) {
-                    return HomeScreen();
+                    return HomeScreen(
+                      fn: fn,
+                    );
                   }));
                 },
                 child: Container(
